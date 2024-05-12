@@ -1,0 +1,47 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>WebSocket Chat</title>
+    <script type="text/javascript">
+        let ws = new WebSocket("ws://localhost:8080/chat");
+
+        ws.onopen = function() {
+            console.log("WebSocket connection established.");
+        };
+
+        ws.onmessage = function(event) {
+            let message = event.data;
+            console.log("Received message: " + message);
+            displayMessage(message);
+        };
+
+        function sendMessage() {
+            let inputElement = document.getElementById("messageInput");
+            let message = inputElement.value;
+
+            // 检查 WebSocket 连接状态
+            if (ws.readyState === WebSocket.OPEN) {
+                // 如果 WebSocket 连接是打开状态，则发送消息
+                ws.send(message);
+                inputElement.value = "";
+                console.log("Sent message: " + message);
+            } else {
+                // 如果 WebSocket 连接不是打开状态，则输出错误信息或执行其他操作
+                console.error('WebSocket connection is not open.');
+            }
+        }
+
+        function displayMessage(message) {
+            let messageElement = document.createElement("div");
+            messageElement.textContent = message;
+            document.getElementById("messageContainer").appendChild(messageElement);
+        }
+    </script>
+</head>
+<body>
+<h1>WebSocket Chat</h1>
+<div id="messageContainer"></div>
+<input type="text" id="messageInput" />
+<button onclick="sendMessage()">Send</button>
+</body>
+</html>
